@@ -1,3 +1,4 @@
 *.docx
 *.out
 .clang-format
+*.DS_Store
