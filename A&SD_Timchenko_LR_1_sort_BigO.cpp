@@ -3,24 +3,40 @@
 #include <cstdio>
 #include <cstdlib>
 
+#define MIN_VAL -5
+#define MAX_VAL 5
+
+using namespace std;
+
 int fill_arr(int *arr, int size, int min_value, int max_value);
 int read_int(const char *prompt, int *value, int *status);
+int check_if_contained(int *arr1, int size1, int *arr2, int size2);
+int is_subsequence(int *arr1, int size1, int *arr2, int size2);
 
 int main(void) {
     srand(static_cast<int>(time(NULL)));
-    int size, min_value, max_value, status = 1;
-    read_int("Input size: ", &size, &status);
-    read_int("Input min value: ", &min_value, &status);
-    read_int("Input max value: ", &max_value, &status);
+    int first_size, second_size, status = 1;
+    read_int("Input size of first array: ", &first_size, &status);
+    read_int("Input size of second array: ", &second_size, &status);
     if (status == 0) {
         return 1;
     }
-    int *array = new int[size];
-    fill_arr(array, size, min_value, max_value);
-    for (int i = 0; i < size; i++) {
+    int *array = new int[first_size];
+    int *another_array = new int[second_size];
+    fill_arr(array, first_size, MIN_VAL, MAX_VAL);
+    fill_arr(another_array, second_size, MIN_VAL, MAX_VAL);
+    for (int i = 0; i < first_size; i++) {
         printf("%d ", array[i]);
     }
+    printf("\n");
+    for (int i = 0; i < second_size; i++) {
+        printf("%d ", another_array[i]);
+    }
+    printf("\n");
+    printf("Is subsequence: %s",
+           is_subsequence(array, first_size, another_array, second_size) ? "Yes\n" : "No\n");
     delete[] array;
+    delete[] another_array;
     return 0;
 }
 
@@ -37,6 +53,7 @@ int read_int(const char *prompt, int *value, int *status) {
 int fill_arr(int *arr, int size, int min_value, int max_value) {
     int status = 1;
     if (max_value < min_value) {
+        printf("Filling error\n");
         status = 0;
     } else {
         for (int i = 0; i < size; i++) {
@@ -44,4 +61,15 @@ int fill_arr(int *arr, int size, int min_value, int max_value) {
         }
     }
     return status;
+}
+
+// O(n)
+int is_subsequence(int *arr1, int size1, int *arr2, int size2) {
+    int j = 0;
+    for (int i = 0; i < size1 && j < size2; i++) {
+        if (arr1[i] == arr2[j]) {
+            j++;
+        }
+    }
+    return j == size2;
 }
