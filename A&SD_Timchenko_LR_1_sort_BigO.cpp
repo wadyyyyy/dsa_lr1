@@ -6,15 +6,12 @@
 #define MIN_VAL -5
 #define MAX_VAL 5
 
-using namespace std;
-
 int fill_arr(int *arr, int size, int min_value, int max_value);
 int read_int(const char *prompt, int *value, int *status);
-int check_if_contained(int *arr1, int size1, int *arr2, int size2);
 int is_subsequence(int *arr1, int size1, int *arr2, int size2);
 
 int main(void) {
-    srand(static_cast<int>(time(NULL)));
+    srand(static_cast<int>(time(nullptr)));
     int first_size, second_size, status = 1;
     read_int("Input size of first array: ", &first_size, &status);
     read_int("Input size of second array: ", &second_size, &status);
@@ -23,8 +20,11 @@ int main(void) {
     }
     int *array = new int[first_size];
     int *another_array = new int[second_size];
-    fill_arr(array, first_size, MIN_VAL, MAX_VAL);
-    fill_arr(another_array, second_size, MIN_VAL, MAX_VAL);
+    if (!(fill_arr(array, first_size, MIN_VAL, MAX_VAL) ||
+          fill_arr(another_array, second_size, MIN_VAL, MAX_VAL))) {
+        printf("Filling error\n");
+        return 1;
+    }
     for (int i = 0; i < first_size; i++) {
         printf("%d ", array[i]);
     }
@@ -50,6 +50,7 @@ int read_int(const char *prompt, int *value, int *status) {
     return *status;
 }
 
+// O(n)
 int fill_arr(int *arr, int size, int min_value, int max_value) {
     int status = 1;
     if (max_value < min_value) {
@@ -63,7 +64,7 @@ int fill_arr(int *arr, int size, int min_value, int max_value) {
     return status;
 }
 
-// O(n)
+// O(n), точнее - O(size1)
 int is_subsequence(int *arr1, int size1, int *arr2, int size2) {
     int j = 0;
     for (int i = 0; i < size1 && j < size2; i++) {
