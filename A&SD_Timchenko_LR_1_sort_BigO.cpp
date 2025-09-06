@@ -18,6 +18,10 @@ int main(void) {
     if (status == 0) {
         return 1;
     }
+    if (second_size > first_size) {
+        printf("Second array can't be subsequence of first one.\n");
+        return 1;
+    }
     int *array = new int[first_size];
     int *another_array = new int[second_size];
     if (!(fill_arr(array, first_size, MIN_VAL, MAX_VAL) ||
