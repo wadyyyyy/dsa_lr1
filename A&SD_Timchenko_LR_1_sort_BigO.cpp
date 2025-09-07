@@ -1,71 +1,57 @@
 // Тимченко
+#include <math.h>
+
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
 
-#define MIN_VAL -5
-#define MAX_VAL 5
+#define MIN_VAL -100
+#define MAX_VAL 100
+#define SIZES 3
 
-int fill_arr(int *arr, int size, int min_value, int max_value);
-int read_int(const char *prompt, int *value, int *status);
+void fill_arr(int *arr, int size, int min_value, int max_value);
 int is_subsequence(int *arr1, int size1, int *arr2, int size2);
 
 int main(void) {
     srand(static_cast<int>(time(nullptr)));
-    int first_size, second_size, status = 1;
-    read_int("Input size of first array: ", &first_size, &status);
-    read_int("Input size of second array: ", &second_size, &status);
-    if (status == 0) {
-        return 1;
+    int *first_arr_sizes = new int[SIZES];
+    for (int i = 0; i < SIZES; i++) {
+        first_arr_sizes[i] = 1000 * pow(100, i);
     }
-    if (second_size > first_size) {
-        printf("Second array can't be subsequence of first one.\n");
-        return 1;
+    int *second_arr_sizes = new int[SIZES];
+    for (int i = 0; i < SIZES; i++) {
+        second_arr_sizes[i] = first_arr_sizes[i] / 100;
     }
-    int *array = new int[first_size];
-    int *another_array = new int[second_size];
-    if (!(fill_arr(array, first_size, MIN_VAL, MAX_VAL) ||
-          fill_arr(another_array, second_size, MIN_VAL, MAX_VAL))) {
-        printf("Filling error\n");
-        return 1;
+
+    printf("---------------------------------");
+    for (int i = 0; i < SIZES; i++) {
+        int *first_arr = new int[first_arr_sizes[i]], *second_arr = new int[second_arr_sizes[i]];
+        fill_arr(first_arr, first_arr_sizes[i], MIN_VAL, MAX_VAL);
+        fill_arr(second_arr, second_arr_sizes[i], MIN_VAL, MAX_VAL);
+
+        auto start = std::chrono::high_resolution_clock::now();
+        bool result = is_subsequence(first_arr, first_arr_sizes[i], second_arr, second_arr_sizes[i]);
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> elapsed = end - start;
+
+        printf("\n\nTest for sizes: %d, %d\n", first_arr_sizes[i], second_arr_sizes[i]);
+        printf("Is subsequence: %s\n", result ? "Yes" : "No");
+        printf("Execution time: %.10lf\n\n", elapsed.count());
+        printf("---------------------------------");
+        delete[] first_arr;
+        delete[] second_arr;
     }
-    for (int i = 0; i < first_size; i++) {
-        printf("%d ", array[i]);
-    }
-    printf("\n");
-    for (int i = 0; i < second_size; i++) {
-        printf("%d ", another_array[i]);
-    }
-    printf("\n");
-    printf("Is subsequence: %s",
-           is_subsequence(array, first_size, another_array, second_size) ? "Yes\n" : "No\n");
-    delete[] array;
-    delete[] another_array;
+
+    delete[] first_arr_sizes;
+    delete[] second_arr_sizes;
     return 0;
 }
 
-int read_int(const char *prompt, int *value, int *status) {
-    *status = 1;
-    printf("%s", prompt);
-    if (scanf("%d", value) != 1) {
-        printf("Input error\n");
-        *status = 0;
-    }
-    return *status;
-}
-
 // O(n)
-int fill_arr(int *arr, int size, int min_value, int max_value) {
-    int status = 1;
-    if (max_value < min_value) {
-        printf("Filling error\n");
-        status = 0;
-    } else {
-        for (int i = 0; i < size; i++) {
-            arr[i] = min_value + rand() % (max_value - min_value + 1);
-        }
+void fill_arr(int *arr, int size, int min_value, int max_value) {
+    for (int i = 0; i < size; i++) {
+        arr[i] = min_value + rand() % (max_value - min_value + 1);
     }
-    return status;
 }
 
 // O(n), точнее - O(size1)
