@@ -2,3 +2,4 @@
 *.out
 .clang-format
 *.DS_Store
+.vscode
